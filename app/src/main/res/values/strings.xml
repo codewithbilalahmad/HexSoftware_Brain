@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Brain</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="ten_qs">10 Qs</string>
+    <string name="fifteen_qs">15 Qs</string>
+    <string name="twenty_qs">20 Qs</string>
+    <string name="app_description">Your Quiz Buddy</string>
+    <string name="level_1">Level 1</string>
+    <string name="all_categories">All Categories</string>
+    <string name="featured_categories">Featured Categories</string>
+    <string name="quiz_setup">Quiz Setup</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="number_of_questions">Number of Questions</string>
+    <string name="start_quiz">Start Quiz</string>
+    <string name="wait_to_load_quiz">Just a moment… We’re setting up your quiz for you!</string>
+    <string name="take_quiz">Take Quiz</string>
+    <string name="next">Next</string>
+    <string name="quiz_finished">Quiz Finished</string>
+    <string name="correct">Correct</string>
+    <string name="wrong">Wrong</string>
+    <string name="skipped">Skipped</string>
+    <string name="time">Time</string>
+    <string name="review_quiz">Review Quiz</string>
+    <string name="play_again">Play again</string>
+    <string name="exit_quiz">Exit Quiz?</string>
+    <string name="leave">Leave</string>
+    <string name="cancel">Cancel</string>
+    <string name="exit_quiz_desp">Are you sure you want to exit the quiz? Your current progress will be lost.</string>
+    <string name="score">Score</string>
+    <string name="leaderboard">Leaderboard</string>
+</resources>
