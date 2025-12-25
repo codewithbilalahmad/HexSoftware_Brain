@@ -4,6 +4,7 @@ import com.muhammad.brain.domain.model.QuizQuestion
 import com.muhammad.brain.utils.getRandomMotivationLine
 
 data class QuizState(
+    val currentCoins : Int = 0,
     val quizQuestions: List<QuizQuestion> = emptyList(),
     val attemptedQuestions: List<QuizQuestion> = emptyList(),
     val correctQuestions : List<QuizQuestion> = emptyList(),
@@ -17,7 +18,10 @@ data class QuizState(
     val showExitQuizDialog : Boolean = false,
     val isAnswerLocked : Boolean = false,
     val timeLeft : Int = 20,
+    val earnedCoin : Int = 0,
     val quizTime : Int = 0,
+    val reviewAnswerIndex : Int = 0,
+    val showReviewAnswersSection : Boolean = false,
     val isNextQuestionButtonEnabled : Boolean = false,
     val showQuizResult : Boolean = false,
     val motivationLine : String = getRandomMotivationLine()

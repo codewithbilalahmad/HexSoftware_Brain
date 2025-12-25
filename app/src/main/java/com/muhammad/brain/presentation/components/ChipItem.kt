@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ChipItem(
     modifier: Modifier = Modifier,
-    icon: Int?=null,
-    onClick : () -> Unit = {},
-    isSelected: Boolean,
+    icon: Int? = null,
+    onClick: () -> Unit = {},
+    isSelected: Boolean, backgroundColor: Color? = null,
     @StringRes label: Int,
 ) {
     val containerColor by animateColorAsState(
@@ -53,9 +53,9 @@ fun ChipItem(
     Row(
         modifier = modifier
             .clip(CircleShape)
-            .border(width = 2.dp, color = borderColor, shape = CircleShape)
-            .background(color = containerColor, shape = CircleShape)
-            .then(if(onClick != Unit) Modifier.clickable(onClick = onClick) else Modifier)
+            .border(width = 2.dp, color = backgroundColor ?:  borderColor, shape = CircleShape)
+            .background(color = backgroundColor ?: containerColor, shape = CircleShape)
+            .then(if (onClick != Unit) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)

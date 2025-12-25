@@ -44,7 +44,7 @@ fun QuizFeatureCategoriesSection(
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),
-            state = pagerState, reverseLayout = true,
+            state = pagerState,
             pageSpacing = 16.dp
         ) { page ->
             val category = featuredCategories[page]

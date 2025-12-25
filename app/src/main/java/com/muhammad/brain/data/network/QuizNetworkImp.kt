@@ -34,7 +34,11 @@ class QuizNetworkImp(
                 "type" to "multiple"
             )
         ).map { response ->
-            response.questions.map { question -> question.toQuizQuestion() }
+            response.questions.mapIndexed { index, question ->
+                question.toQuizQuestion(
+                    id = index + 1
+                )
+            }
         }
     }
 }

@@ -46,7 +46,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.coil.compose)
+    implementation(libs.lottie.compose)
+    implementation(libs.androidx.compose.animation.graphics)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.bundles.ktor)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.koin.androidx.compose)

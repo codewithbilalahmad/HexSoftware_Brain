@@ -9,6 +9,7 @@ data class HomeState(
     val quizCategories: List<QuizCategory> = emptyList(),
     val isCategoriesLoading: Boolean = false,
     val categoriesError: String? = null,
+    val coins : Int = 0,
     val selectedCategory: QuizCategory? = null,
     val showQuizSetupSheet : Boolean = false,
     val selectedDifficultyLevel: DifficultyLevel = DifficultyLevel.Easy,

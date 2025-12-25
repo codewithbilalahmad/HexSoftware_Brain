@@ -1,11 +1,15 @@
 package com.muhammad.brain.presentation.screens.quiz
 
+import android.media.MediaPlayer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.muhammad.brain.BrainApplication
+import com.muhammad.brain.R
 import com.muhammad.brain.domain.model.QuizAnswerState
 import com.muhammad.brain.domain.repository.QuizRepository
+import com.muhammad.brain.domain.repository.SettingPreferences
 import com.muhammad.brain.domain.utils.onError
 import com.muhammad.brain.domain.utils.onSuccess
 import com.muhammad.brain.presentation.navigation.Destinations
@@ -21,16 +25,25 @@ import kotlinx.coroutines.launch
 
 class QuizViewModel(
     savedStateHandle: SavedStateHandle,
+    private val settingPreferences: SettingPreferences,
     private val quizRepository: QuizRepository,
 ) : ViewModel() {
+    private val context = BrainApplication.INSTANCE
+    private var mediaPlayer : MediaPlayer?=null
     private val arguments = savedStateHandle.toRoute<Destinations.QuizScreen>()
     private val _state = MutableStateFlow(QuizState())
     val state = _state.asStateFlow()
     private val _events = Channel<QuizEvent>()
     val events = _events.receiveAsFlow()
     private var questionTimerJob: Job? = null
-    private var quizTimerJob : Job?=null
+    private var quizTimerJob: Job? = null
+
     init {
+        viewModelScope.launch {
+            settingPreferences.observeCoins().collect { coins ->
+                _state.update { it.copy(currentCoins = coins) }
+            }
+        }
         onAction(QuizAction.GetQuizQuestions)
     }
 
@@ -49,7 +62,23 @@ class QuizViewModel(
                 _state.update { it.copy(showExitQuizDialog = false) }
                 _events.trySend(QuizEvent.OnNavigateBack)
             }
+
+            QuizAction.OnToggleReviewAnswersSection -> onToggleReviewAnswersSection()
+            QuizAction.OnNextReviewAnswer -> onNextReviewAnswer()
+            QuizAction.OnPreviousReviewAnswer -> onPreviousReviewAnswer()
         }
+    }
+
+    private fun onPreviousReviewAnswer(){
+        _state.update { it.copy(reviewAnswerIndex = it.reviewAnswerIndex - 1) }
+    }
+
+    private fun onNextReviewAnswer() {
+        _state.update { it.copy(reviewAnswerIndex = it.reviewAnswerIndex + 1) }
+    }
+
+    private fun onToggleReviewAnswersSection() {
+        _state.update { it.copy(showReviewAnswersSection = !it.showReviewAnswersSection) }
     }
 
     private fun onRestartQuiz() {
@@ -75,13 +104,19 @@ class QuizViewModel(
                 skipQuestions = it.skipQuestions + question
             )
         }
+        playSound(R.raw.miss)
     }
 
     private fun onNextQuestion() {
         val current = _state.value
         if (current.currentQuestionIndex + 1 >= current.questionCount) {
             quizTimerJob?.cancel()
+            val totalCoins = current.currentCoins + current.earnedCoin
+            viewModelScope.launch {
+                settingPreferences.saveCoins(coins = totalCoins)
+            }
             _state.update { it.copy(showQuizResult = true) }
+            playSound(R.raw.completed)
             return
         }
         val nextIndex = current.currentQuestionIndex + 1
@@ -92,7 +127,7 @@ class QuizViewModel(
                 isAnswerLocked = false,
                 isNextQuestionButtonEnabled = false,
                 timeLeft = 20,
-                currentQuestionOptions = (nextQuestion.incorrectAnswers + nextQuestion.correctAnswer).shuffled()
+                currentQuestionOptions = nextQuestion.options
             )
         }
         startQuestionTimer()
@@ -118,9 +153,16 @@ class QuizViewModel(
             )
         }
         if (isCorrect) {
-            _state.update { it.copy(correctQuestions = it.correctQuestions + question) }
+            _state.update {
+                it.copy(
+                    correctQuestions = it.correctQuestions + question,
+                    earnedCoin = it.earnedCoin + 5
+                )
+            }
+            playSound(R.raw.correct)
         } else {
             _state.update { it.copy(wrongQuestions = it.wrongQuestions + question) }
+            playSound(R.raw.wrong)
         }
     }
 
@@ -138,9 +180,7 @@ class QuizViewModel(
                         isQuizQuestionLoading = false,
                         quizQuestionError = null, questionCount = arguments.questionCount,
                         quizQuestions = data,
-                        currentQuestionOptions = if (firstQuestion != null) {
-                            (firstQuestion.incorrectAnswers + firstQuestion.correctAnswer).shuffled()
-                        } else emptyList()
+                        currentQuestionOptions = firstQuestion?.options ?: emptyList()
                     )
                 }
                 startQuestionTimer()
@@ -150,15 +190,17 @@ class QuizViewModel(
             }
         }
     }
-    private fun startQuizTimer(){
+
+    private fun startQuizTimer() {
         quizTimerJob?.cancel()
         quizTimerJob = viewModelScope.launch {
-            while (isActive){
+            while (isActive) {
                 _state.update { it.copy(quizTime = it.quizTime + 1) }
                 delay(1000L)
             }
         }
     }
+
     private fun startQuestionTimer() {
         questionTimerJob?.cancel()
         questionTimerJob = viewModelScope.launch {
@@ -171,5 +213,10 @@ class QuizViewModel(
                 }
             }
         }
+    }
+    private fun playSound(sound : Int){
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer.create(context, sound)
+        mediaPlayer?.start()
     }
 }

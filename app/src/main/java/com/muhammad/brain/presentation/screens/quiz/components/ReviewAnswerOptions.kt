@@ -1,31 +1,26 @@
 package com.muhammad.brain.presentation.screens.quiz.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,32 +28,36 @@ import com.muhammad.brain.R
 import com.muhammad.brain.domain.model.QuizAnswerState
 import com.muhammad.brain.domain.model.QuizQuestion
 import com.muhammad.brain.presentation.theme.Green
+import com.muhammad.brain.presentation.theme.GreenContainer
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-fun LazyListScope.quizQuestionOptions(
+fun LazyListScope.reviewAnswerOptions(
     modifier: Modifier = Modifier,
-    quizQuestion: QuizQuestion,
-    options: List<String>,
-    isAnswerLocked: Boolean,
-    onOptionSelected: (String) -> Unit,
+    quizQuestion: QuizQuestion
 ) {
+    val options = quizQuestion.options
     itemsIndexed(options, key = { id, _ -> id }) { index, option ->
         val isSelected = option == quizQuestion.selectedAnswer
         val correctAnswer = quizQuestion.correctAnswer
-        val resultIcon = when {
-            isSelected && quizQuestion.answerState == QuizAnswerState.Correct -> R.drawable.ic_check
-            isSelected && quizQuestion.answerState == QuizAnswerState.Wrong -> R.drawable.ic_cancel
-            !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Wrong -> R.drawable.ic_check
-            !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Skipped -> R.drawable.ic_forward
-            else -> null
-        }
         val containerColor by animateColorAsState(
             targetValue = when {
                 isSelected && quizQuestion.answerState == QuizAnswerState.Correct -> Green
-
                 isSelected && quizQuestion.answerState == QuizAnswerState.Wrong -> MaterialTheme.colorScheme.error
                 !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Wrong -> Green
                 !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Skipped -> Green
+                else -> MaterialTheme.colorScheme.background
+            },
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "containerColor"
+        )
+        val badgeColor by animateColorAsState(
+            targetValue = when {
+                isSelected && quizQuestion.answerState == QuizAnswerState.Correct -> GreenContainer
+
+                isSelected && quizQuestion.answerState == QuizAnswerState.Wrong -> MaterialTheme.colorScheme.errorContainer
+                !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Wrong -> GreenContainer
+
+                !isSelected && option == correctAnswer && quizQuestion.answerState == QuizAnswerState.Skipped -> GreenContainer
 
                 else -> MaterialTheme.colorScheme.background
             },
@@ -90,6 +89,13 @@ fun LazyListScope.quizQuestionOptions(
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "borderColor"
         )
+        val labelRes = when {
+            option == correctAnswer -> R.string.correct
+            isSelected && quizQuestion.answerState == QuizAnswerState.Wrong -> R.string.your_choice
+            isSelected && quizQuestion.answerState == QuizAnswerState.Correct -> R.string.correct
+            isSelected && quizQuestion.answerState == QuizAnswerState.Skipped -> R.string.correct
+            else -> null
+        }
         Card(
             modifier = modifier,
             shape = CircleShape,
@@ -99,13 +105,9 @@ fun LazyListScope.quizQuestionOptions(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .then(
-                        if (isAnswerLocked) Modifier
-                        else Modifier.clickable { onOptionSelected(option) }
-                    )
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -123,21 +125,25 @@ fun LazyListScope.quizQuestionOptions(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Medium,
-                            color = contentColor,lineHeight = 15.sp,
+                            color = contentColor, lineHeight = 15.sp,
                         )
                     )
                 }
-                AnimatedVisibility(
-                    visible = resultIcon != null,
-                    enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()),
-                    exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
-                ) {
-                    resultIcon?.let { icon ->
-                        Icon(
-                            imageVector = ImageVector.vectorResource(icon),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = contentColor
+                labelRes?.let { label ->
+                    Row(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(badgeColor)
+                            .padding(horizontal = 8.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = stringResource(label),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         )
                     }
                 }

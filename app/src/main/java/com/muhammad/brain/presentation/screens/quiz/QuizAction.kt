@@ -7,5 +7,8 @@ sealed interface QuizAction{
     data object OnTimeFinished : QuizAction
     data object OnNextQuestion : QuizAction
     data object OnRestartQuiz : QuizAction
+    data object OnToggleReviewAnswersSection : QuizAction
+    data object OnNextReviewAnswer : QuizAction
+    data object OnPreviousReviewAnswer : QuizAction
     data object OnConfirmQuitQuiz : QuizAction
 }

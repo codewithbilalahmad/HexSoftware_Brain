@@ -30,4 +30,8 @@
     <string name="exit_quiz_desp">Are you sure you want to exit the quiz? Your current progress will be lost.</string>
     <string name="score">Score</string>
     <string name="leaderboard">Leaderboard</string>
+    <string name="coins">Coins</string>
+    <string name="review_answers">Review Answers</string>
+    <string name="previous">Previous</string>
+    <string name="your_choice">Your Choice</string>
 </resources>

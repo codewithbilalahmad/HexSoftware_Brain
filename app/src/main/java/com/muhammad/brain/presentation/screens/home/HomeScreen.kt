@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +41,7 @@ import com.muhammad.brain.R
 import com.muhammad.brain.domain.model.DifficultyLevel
 import com.muhammad.brain.domain.model.QuestionCount
 import com.muhammad.brain.domain.utils.ObserveAsEvents
+import com.muhammad.brain.presentation.components.AppLoading
 import com.muhammad.brain.presentation.components.ChipItem
 import com.muhammad.brain.presentation.components.PrimaryButton
 import com.muhammad.brain.presentation.navigation.Destinations
@@ -51,6 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = koinViewModel()) {
+    val layoutDirection = LocalLayoutDirection.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ObserveAsEvents(viewModel.events) { event ->
@@ -70,7 +74,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         HomeHeader(onLeaderboardClick = {
             navHostController.navigate(Destinations.LeaderboardScreen)
-        })
+        }, coins = state.coins)
     }) { paddingValues ->
         when {
             state.isCategoriesLoading -> {
@@ -80,7 +84,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
                         .padding(paddingValues),
                     contentAlignment = Alignment.Center
                 ) {
-                    ContainedLoadingIndicator()
+                    AppLoading()
                 }
             }
 
@@ -110,13 +114,12 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
 
             else -> {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            top = paddingValues.calculateTopPadding(),
-                            start = 16.dp, end = 16.dp,
-                            bottom = 16.dp
-                        ),
+                    modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(
+                        start = paddingValues.calculateStartPadding(layoutDirection) + 16.dp,
+                        end = paddingValues.calculateEndPadding(layoutDirection) + 16.dp,
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding() + 16.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     stickyHeader("featured_categories_header") {
