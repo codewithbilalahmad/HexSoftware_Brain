@@ -106,7 +106,11 @@ fun QuizScreen(
         }
     }
     BackHandler {
-        viewModel.onAction(QuizAction.ToggleExitQuizDialog)
+        if(state.showReviewAnswersSection){
+            viewModel.onAction(QuizAction.OnToggleReviewAnswersSection)
+        } else{
+            viewModel.onAction(QuizAction.ToggleExitQuizDialog)
+        }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {

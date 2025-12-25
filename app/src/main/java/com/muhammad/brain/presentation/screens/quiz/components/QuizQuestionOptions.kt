@@ -2,6 +2,10 @@ package com.muhammad.brain.presentation.screens.quiz.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
@@ -20,10 +24,13 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +39,11 @@ import androidx.compose.ui.unit.sp
 import com.muhammad.brain.R
 import com.muhammad.brain.domain.model.QuizAnswerState
 import com.muhammad.brain.domain.model.QuizQuestion
+import com.muhammad.brain.domain.model.shake.ShakeStrength
+import com.muhammad.brain.domain.model.shake.rememberShakingState
+import com.muhammad.brain.domain.model.shake.shakable
 import com.muhammad.brain.presentation.theme.Green
+import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 fun LazyListScope.quizQuestionOptions(
@@ -43,7 +54,23 @@ fun LazyListScope.quizQuestionOptions(
     onOptionSelected: (String) -> Unit,
 ) {
     itemsIndexed(options, key = { id, _ -> id }) { index, option ->
+        val shakeState = rememberShakingState(strength = ShakeStrength.Strong)
         val isSelected = option == quizQuestion.selectedAnswer
+        val scaleX by animateFloatAsState(
+            targetValue = if (isSelected) 1.02f else 1f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "scale"
+        )
+        val scaleY by animateFloatAsState(
+            targetValue = if (isSelected) 1.1f else 1f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "scale"
+        )
+        val elevation by animateDpAsState(
+            targetValue = if (isSelected) 8.dp else 0.dp,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "elevation"
+        )
         val correctAnswer = quizQuestion.correctAnswer
         val resultIcon = when {
             isSelected && quizQuestion.answerState == QuizAnswerState.Correct -> R.drawable.ic_check
@@ -90,8 +117,16 @@ fun LazyListScope.quizQuestionOptions(
             animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
             label = "borderColor"
         )
+        LaunchedEffect(isSelected, quizQuestion.answerState) {
+            if (isSelected && quizQuestion.answerState == QuizAnswerState.Wrong) {
+                shakeState.snake()
+            }
+        }
         Card(
-            modifier = modifier,
+            modifier = modifier.shakable(state = shakeState).graphicsLayer {
+                this.scaleX = scaleX
+                this.scaleY = scaleY
+            }, elevation = CardDefaults.cardElevation(elevation),
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = containerColor),
             border = BorderStroke(width = 2.dp, color = borderColor)
@@ -123,7 +158,7 @@ fun LazyListScope.quizQuestionOptions(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Medium,
-                            color = contentColor,lineHeight = 15.sp,
+                            color = contentColor, lineHeight = 15.sp,
                         )
                     )
                 }

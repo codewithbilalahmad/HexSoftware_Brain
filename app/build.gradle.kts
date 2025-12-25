@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.splashscreen)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.compose.animation.graphics)
     implementation(libs.androidx.datastore.preferences)

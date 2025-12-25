@@ -7,7 +7,7 @@ import com.muhammad.brain.domain.model.QuizCategory
 
 data class HomeState(
     val quizCategories: List<QuizCategory> = emptyList(),
-    val isCategoriesLoading: Boolean = false,
+    val isCategoriesLoading: Boolean = true,
     val categoriesError: String? = null,
     val coins : Int = 0,
     val selectedCategory: QuizCategory? = null,

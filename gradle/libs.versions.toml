@@ -16,12 +16,12 @@ navigationCompose = "2.9.6"
 kotlinSerialization = "1.9.0"
 material3 = "1.5.0-alpha11"
 ktor = "3.3.2"
-coil = "2.7.0"
+splashscreen = "1.2.0"
 
 [libraries]
+androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 androidx-compose-animation-graphics = { module = "androidx.compose.animation:animation-graphics", version.ref = "animationGraphics" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-coil-compose = {module = "io.coil-kt:coil-compose", version.ref = "coil"}
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

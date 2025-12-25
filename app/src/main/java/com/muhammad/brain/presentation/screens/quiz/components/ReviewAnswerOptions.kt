@@ -1,6 +1,8 @@
 package com.muhammad.brain.presentation.screens.quiz.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -96,8 +99,16 @@ fun LazyListScope.reviewAnswerOptions(
             isSelected && quizQuestion.answerState == QuizAnswerState.Skipped -> R.string.correct
             else -> null
         }
+        val scaleY by animateFloatAsState(
+            targetValue = if (isSelected) 1.1f else 1f,
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "scale"
+        )
         Card(
-            modifier = modifier,
+            modifier = modifier.graphicsLayer{
+                this.scaleX = scaleX
+                this.scaleY = scaleY
+            },
             shape = CircleShape,
             colors = CardDefaults.cardColors(containerColor = containerColor),
             border = BorderStroke(width = 2.dp, color = borderColor)
