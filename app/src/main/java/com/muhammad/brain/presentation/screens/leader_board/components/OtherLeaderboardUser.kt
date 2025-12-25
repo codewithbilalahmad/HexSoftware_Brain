@@ -32,7 +32,7 @@ fun OtherLeaderboardUser(
     Card(
         modifier = modifier, onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(width = 2.dp, MaterialTheme.colorScheme.surfaceContainer),
+        border = BorderStroke(width = 1.5.dp, MaterialTheme.colorScheme.surfaceVariant),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
     ) {
         Row(
@@ -43,13 +43,13 @@ fun OtherLeaderboardUser(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = leaderboardUser.rank.toString(),
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                text = "${leaderboardUser.rank}.",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
             )
             Row(
                 modifier = Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Image(
                     painter = painterResource(leaderboardUser.image),

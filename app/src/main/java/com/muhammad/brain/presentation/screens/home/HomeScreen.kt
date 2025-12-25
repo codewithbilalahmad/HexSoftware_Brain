@@ -1,5 +1,6 @@
 package com.muhammad.brain.presentation.screens.home
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -49,6 +51,7 @@ import com.muhammad.brain.presentation.screens.home.components.CategoryHeader
 import com.muhammad.brain.presentation.screens.home.components.HomeHeader
 import com.muhammad.brain.presentation.screens.home.components.QuizCategoryCard
 import com.muhammad.brain.presentation.screens.home.components.QuizFeatureCategoriesSection
+import com.muhammad.brain.presentation.theme.Green
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
@@ -145,7 +148,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
                     }
                     items(state.quizCategories, key = { it.id }) { category ->
                         QuizCategoryCard(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                             category = category,
                             onClick = {
                                 viewModel.onAction(HomeAction.OnQuizCategorySelected(category))
@@ -167,7 +170,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 24.dp, top = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 24.dp, top = 4.dp)
             ) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     IconButton(onClick = {
@@ -180,7 +183,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
                     }
                     Text(
                         text = stringResource(R.string.quiz_setup),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -188,17 +191,25 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
                     text = stringResource(R.string.difficulty),
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(DifficultyLevel.entries, key = { it.name }) { level ->
                         val isSelected = level == state.selectedDifficultyLevel
+                        val containerColor by animateColorAsState(
+                            targetValue = when{
+                                isSelected && level == DifficultyLevel.Easy -> Green
+                                isSelected && level == DifficultyLevel.Medium -> MaterialTheme.colorScheme.primary
+                                isSelected && level == DifficultyLevel.Hard -> MaterialTheme.colorScheme.error
+                                else -> Color.Transparent
+                            }, animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(), label = "containerColor"
+                        )
                         ChipItem(
                             icon = level.icon,
                             isSelected = isSelected,
-                            label = level.label,
+                            label = level.label, backgroundColor = containerColor,
                             onClick = {
                                 viewModel.onAction(HomeAction.OnSelectDifficultyLevel(level))
                             })
@@ -209,7 +220,7 @@ fun HomeScreen(navHostController: NavHostController, viewModel: HomeViewModel = 
                     text = stringResource(R.string.number_of_questions),
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

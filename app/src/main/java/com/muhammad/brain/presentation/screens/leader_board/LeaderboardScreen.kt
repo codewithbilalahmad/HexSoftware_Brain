@@ -1,6 +1,7 @@
 package com.muhammad.brain.presentation.screens.leader_board
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import com.muhammad.brain.R
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,22 +37,29 @@ fun LeaderboardScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(
-            navigationIcon = {
-                IconButton(onClick = {
-                    navHostController.navigateUp()
-                }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_back),
-                        contentDescription = null
-                    )
-                }
-            },
-            title = {
-                Text(text = stringResource(R.string.leaderboard))
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            CenterAlignedTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navHostController.navigateUp()
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_back),
+                            contentDescription = null
+                        )
+                    }
+                },
+                title = {
+                    Text(text = stringResource(R.string.leaderboard))
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.5.dp,
+                color = MaterialTheme.colorScheme.surfaceVariant
+            )
+        }
     }) { paddingValues ->
         LazyColumn(
             modifier = Modifier

@@ -15,7 +15,7 @@ fun getCategoryImageByName(name: String): Int {
         "Science & Nature" -> R.drawable.science
         "Computers" -> R.drawable.computer
         "Mathematics" -> R.drawable.mathematic
-        "Mythology" -> R.drawable.mythology
+        "Mythology" -> R.drawable.general_knowledge
         "Sports" -> R.drawable.sports
         "Geography" -> R.drawable.geography
         "History" -> R.drawable.history

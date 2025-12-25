@@ -55,7 +55,7 @@ fun QuizFeatureCategoriesSection(
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 repeat(featuredCategories.size) { index ->
                     val isCurrent = pagerState.currentPage == index
@@ -71,7 +71,7 @@ fun QuizFeatureCategoriesSection(
                     )
                     Box(
                         modifier = Modifier
-                            .size(width = width, height = 4.dp)
+                            .size(width = width, height = 6.dp)
                             .clip(CircleShape)
                             .background(color)
                     )

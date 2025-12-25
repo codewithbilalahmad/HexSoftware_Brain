@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -226,9 +227,9 @@ fun QuizScreen(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Image(
-                                    imageVector = ImageVector.vectorResource(R.drawable.ic_trophy),
+                                    painter = painterResource(R.drawable.celebrities),
                                     contentDescription = null,
-                                    modifier = Modifier.size(80.dp)
+                                    modifier = Modifier.size(100.dp)
                                 )
                                 Spacer(Modifier.height(24.dp))
                                 Text(

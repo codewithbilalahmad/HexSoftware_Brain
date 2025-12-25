@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -60,19 +61,18 @@ fun QuizFeatureCategoryCard(
     }
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(24.dp))
             .clickable {
                 onClick(category)
             }) {
         Box(
             modifier = Modifier
                 .matchParentSize()
+                .clip(RoundedCornerShape(24.dp))
                 .background(brush = Brush.horizontalGradient(category.brushColors))
                 .then(blurModifier)
         )
         Row(
-            modifier = modifier
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -80,7 +80,7 @@ fun QuizFeatureCategoryCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = category.name,
+                    text = category.name.substringBefore(" &"),
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = Color.White,
                         textAlign = TextAlign.Left,

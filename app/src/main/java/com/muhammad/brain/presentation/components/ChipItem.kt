@@ -35,6 +35,7 @@ fun ChipItem(
     isSelected: Boolean, backgroundColor: Color? = null,
     @StringRes label: Int,
 ) {
+    val fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Medium
     val containerColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
         animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
@@ -70,7 +71,7 @@ fun ChipItem(
         Text(
             text = stringResource(label),
             style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Medium,
+                fontWeight = fontWeight,
                 color = contentColor
             )
         )
